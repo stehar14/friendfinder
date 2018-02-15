@@ -5,7 +5,7 @@ function apiRoutes(app) {
 
   // Display JSON of all possible friends
   app.get('/api/friends', function (req, res) {
-    res.json(buddyData);
+    res.json(buddyData.buddyList);
   });
 
   // Handle incoming survey results
@@ -26,19 +26,19 @@ function apiRoutes(app) {
 
     // Compare new buddy to buddy list
     var scoreComparisionArray = [];
-    for (var i=0; i<buddyData.length; i++) {
+    for (var i=0; i<buddyData.buddyList.length; i++) {
 
       // Check each buddy's scores and sum difference in points
       var currentComparison = 0;
       for (var j=0; j<newBuddy.scores.length; j++) {
-        currentComparison += Math.abs(newBuddy.scores[j] - buddyData[i].scores[j]);
+        currentComparison += Math.abs(newBuddy.scores[j] - buddyData.buddyList[i].scores[j]);
       }
 
       // Push each comparison between buddies to array
       scoreComparisionArray.push(currentComparison);
     }
 
-    // Determine the best match using the postion of best match in the buddyData array
+    // Determine the best match using the postion of best match in the buddyData.buddyList array
     var bestMatchPosition = 0; // assume its the first person to start
     for (var i=1; i<scoreComparisionArray.length; i++) {
       
@@ -49,14 +49,14 @@ function apiRoutes(app) {
 
     }
 
-    // If the 2 buddies have the same comparison, then the NEWEST entry in the buddyData array is chosen
-    var bestBuddyMatch = buddyData[bestMatchPosition];
+    // If the 2 buddies have the same comparison, then the NEWEST entry in the buddyData.buddyList array is chosen
+    var bestBuddyMatch = buddyData.buddyList[bestMatchPosition];
 
     // Reply with a JSON object of the best match
     res.json(bestBuddyMatch);
 
     // Push the new friend to the friends data array for storage
-    buddyData.push(newBuddy);
+    buddyData.addNewBuddy(newBuddy);
     
     });
 
